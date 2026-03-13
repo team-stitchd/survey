@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CDP Workshop Survey</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0f2340;
+    --navy-mid: #1a3a5c;
+    --navy-light: #2a5580;
+    --accent: #e8824a;
+    --accent-light: #f5a876;
+    --teal: #2a9d8f;
+    --teal-light: #52c5b6;
+    --cream: #faf8f4;
+    --cream-dark: #f0ece3;
+    --text: #1a1a1a;
+    --text-mid: #445566;
+    --text-light: #778899;
+    --border: #ddd8cf;
+    --white: #ffffff;
+    --must: #c0392b;
+    --should: #2980b9;
+    --nice: #27ae60;
+    --not: #95a5a6;
+    --radius: 10px;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    background: var(--navy);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .topbar-brand {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.15rem;
+    color: var(--white);
+    letter-spacing: 0.02em;
+  }
+  .topbar-brand span { color: var(--accent-light); }
+  .topbar-right { display: flex; align-items: center; gap: 1rem; }
+  .topbar-mode {
+    font-size: 12px;
+    background: rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.7);
+    padding: 4px 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.2s;
+    border: none;
+  }
+  .topbar-mode:hover { background: rgba(255,255,255,0.2); color: white; }
+
+  /* ── SCREENS ── */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ── LOGIN ── */
+  #screen-login {
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 60%, #1e4d6b 100%);
+  }
+  #screen-login.active { display: flex; }
+
+  .login-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 3rem 3.5rem;
+    width: 420px;
+    max-width: 92vw;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  }
+  .login-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  .login-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    color: var(--navy);
+    line-height: 1.15;
+    margin-bottom: 0.4rem;
+  }
+  .login-sub {
+    font-size: 13px;
+    color: var(--text-light);
+    margin-bottom: 2rem;
+  }
+  .login-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-mid);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .login-input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    background: var(--cream);
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 1rem;
+  }
+  .login-input:focus { border-color: var(--navy-light); background: white; }
+  .login-input.error { border-color: var(--must); }
+  .login-error { font-size: 12px; color: var(--must); margin-top: -6px; margin-bottom: 10px; display: none; }
+  .btn-primary {
+    width: 100%;
+    padding: 13px;
+    background: var(--navy);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    letter-spacing: 0.03em;
+  }
+  .btn-primary:hover { background: var(--navy-light); }
+  .btn-primary:active { transform: scale(0.99); }
+  .btn-primary.accent { background: var(--accent); }
+  .btn-primary.accent:hover { background: #d06a35; }
+
+  /* ── SURVEY ── */
+  .survey-wrap {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  .survey-header {
+    background: var(--navy);
+    color: white;
+    padding: 2.5rem 2rem 2rem;
+    border-radius: 14px;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .survey-header::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+  .survey-header::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; right: 80px;
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    background: rgba(232, 130, 74, 0.15);
+  }
+  .survey-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-light);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  .survey-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.9rem;
+    margin-bottom: 0.3rem;
+    position: relative;
+  }
+  .survey-desc {
+    font-size: 13px;
+    color: rgba(255,255,255,0.65);
+    max-width: 540px;
+    position: relative;
+  }
+
+  .respondent-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  @media (max-width: 540px) { .respondent-row { grid-template-columns: 1fr; } }
+  .field-wrap label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-mid);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .field-wrap input, .field-wrap textarea {
+    width: 100%;
+    padding: 11px 13px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    background: white;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .field-wrap input:focus, .field-wrap textarea:focus { border-color: var(--navy-light); }
+
+  /* ── INSTRUCTIONS CARD ── */
+  .instructions {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1.4rem 1.6rem;
+    margin-bottom: 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+  }
+  @media (max-width: 600px) { .instructions { grid-template-columns: 1fr; } }
+  .inst-block h4 {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+  .inst-block.importance h4 { color: var(--navy); }
+  .inst-block.complexity h4 { color: var(--accent); }
+  .inst-scale { display: flex; flex-direction: column; gap: 5px; }
+  .inst-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+    color: var(--text-mid);
+  }
+  .inst-dot {
+    width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+  }
+
+  /* ── THEME SECTION ── */
+  .theme-section { margin-bottom: 2.5rem; }
+  .theme-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 1rem;
+  }
+  .theme-pill {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--navy);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+  .theme-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.2rem;
+    color: var(--navy);
+  }
+
+  /* ── REQUIREMENT CARD ── */
+  .req-card {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-bottom: 0.75rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .req-card:hover { border-color: #b8c8d8; }
+  .req-card.answered { border-color: var(--teal-light); }
+  .req-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 0.6rem;
+  }
+  .req-id {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    background: #fdf0e8;
+    padding: 2px 8px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .req-title {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--navy);
+  }
+  .req-desc {
+    font-size: 12.5px;
+    color: var(--text-light);
+    margin-bottom: 1rem;
+    line-height: 1.55;
+    padding-left: 38px;
+  }
+  .req-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    padding-left: 38px;
+  }
+
+  /* Importance toggle buttons */
+  .importance-group { display: flex; gap: 5px; flex-wrap: wrap; }
+  .imp-btn {
+    font-size: 11.5px;
+    font-weight: 500;
+    padding: 5px 11px;
+    border-radius: 6px;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    color: var(--text-mid);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+    white-space: nowrap;
+  }
+  .imp-btn:hover { border-color: #aaa; }
+  .imp-btn.active-must   { background: #fde8e6; border-color: var(--must);   color: var(--must); font-weight: 600; }
+  .imp-btn.active-should { background: #e3f1fb; border-color: var(--should); color: var(--should); font-weight: 600; }
+  .imp-btn.active-nice   { background: #e6f9f0; border-color: var(--nice);   color: var(--nice); font-weight: 600; }
+  .imp-btn.active-not    { background: #f3f4f4; border-color: #aaa;          color: #666; font-weight: 600; }
+
+  /* Complexity select */
+  .complexity-wrap { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+  .complexity-label-text { font-size: 11.5px; color: var(--text-light); white-space: nowrap; }
+  .complexity-select {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    padding: 5px 8px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    background: var(--cream);
+    color: var(--text-mid);
+    cursor: pointer;
+    outline: none;
+  }
+  .complexity-select:focus { border-color: var(--accent); }
+
+  /* ── OPEN QUESTIONS ── */
+  .open-section {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1.6rem;
+    margin-bottom: 2rem;
+  }
+  .open-section h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.15rem;
+    color: var(--navy);
+    margin-bottom: 1.2rem;
+  }
+  .open-q { margin-bottom: 1.2rem; }
+  .open-q label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-mid);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .open-q textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 10px 13px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    resize: vertical;
+    background: var(--cream);
+    outline: none;
+    transition: border-color 0.2s;
+    color: var(--text);
+  }
+  .open-q textarea:focus { border-color: var(--navy-light); background: white; }
+
+  /* ── PROGRESS ── */
+  .progress-bar-wrap {
+    background: var(--cream-dark);
+    border-radius: 4px;
+    height: 5px;
+    margin-bottom: 2rem;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--teal);
+    border-radius: 4px;
+    transition: width 0.4s ease;
+  }
+  .progress-label {
+    font-size: 12px;
+    color: var(--text-light);
+    text-align: right;
+    margin-bottom: 6px;
+  }
+
+  /* ── SUBMIT ── */
+  .submit-row {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    align-items: center;
+  }
+  .submit-note { font-size: 12px; color: var(--text-light); }
+  .btn-submit {
+    padding: 13px 32px;
+    background: var(--navy);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-submit:hover { background: var(--accent); }
+  .btn-submit:disabled { background: #aaa; cursor: not-allowed; }
+
+  /* ── THANK YOU ── */
+  #screen-thanks {
+    min-height: 80vh;
+    align-items: center;
+    justify-content: center;
+  }
+  #screen-thanks.active { display: flex; }
+  .thanks-card {
+    background: white;
+    border-radius: 14px;
+    padding: 3rem 3.5rem;
+    text-align: center;
+    max-width: 480px;
+    border: 1.5px solid var(--border);
+  }
+  .thanks-icon {
+    width: 60px; height: 60px;
+    background: #e6f9f0;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.2rem;
+    font-size: 28px;
+  }
+  .thanks-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.8rem;
+    color: var(--navy);
+    margin-bottom: 0.6rem;
+  }
+  .thanks-sub { font-size: 14px; color: var(--text-light); line-height: 1.6; }
+
+  /* ── ADMIN DASHBOARD ── */
+  #screen-admin { display: none; }
+  #screen-admin.active { display: block; }
+  .admin-wrap {
+    max-width: 1060px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+  .admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .admin-header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.8rem;
+    color: var(--navy);
+  }
+  .admin-header p { font-size: 13px; color: var(--text-light); }
+  .btn-secondary {
+    padding: 9px 18px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    background: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    color: var(--text-mid);
+  }
+  .btn-secondary:hover { border-color: var(--navy); color: var(--navy); }
+
+  .metrics-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  @media (max-width: 700px) { .metrics-row { grid-template-columns: 1fr 1fr; } }
+  .metric-card {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1.1rem 1.3rem;
+  }
+  .metric-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-light); font-weight: 600; margin-bottom: 4px; }
+  .metric-value { font-size: 2rem; font-weight: 300; color: var(--navy); line-height: 1; }
+  .metric-sub { font-size: 11px; color: var(--text-light); margin-top: 3px; }
+
+  .dash-grid {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  @media (max-width: 800px) { .dash-grid { grid-template-columns: 1fr; } }
+  .dash-card {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1.3rem 1.5rem;
+  }
+  .dash-card h3 {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-mid);
+    margin-bottom: 1rem;
+  }
+
+  .priority-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .priority-table th {
+    text-align: left;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-light);
+    font-weight: 600;
+    padding: 0 8px 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .priority-table td {
+    padding: 9px 8px 9px 0;
+    border-bottom: 1px solid var(--cream-dark);
+    vertical-align: middle;
+  }
+  .priority-table tr:last-child td { border-bottom: none; }
+  .rank-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px;
+    background: var(--navy);
+    color: white;
+    border-radius: 50%;
+    font-size: 10px;
+    font-weight: 600;
+  }
+  .score-bar-wrap { display: flex; align-items: center; gap: 8px; }
+  .score-bar {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--teal);
+    min-width: 4px;
+    transition: width 0.6s ease;
+  }
+  .score-val { font-size: 11px; color: var(--text-light); white-space: nowrap; }
+
+  .complexity-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .cx-low { background: #e6f9f0; color: #1a7a4a; }
+  .cx-med { background: #fff3e0; color: #b06000; }
+  .cx-high { background: #fde8e6; color: #c0392b; }
+
+  .loading-dash {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem;
+    color: var(--text-light);
+    gap: 1rem;
+  }
+  .spinner {
+    width: 32px; height: 32px;
+    border: 3px solid var(--border);
+    border-top-color: var(--navy);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .no-data {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-light);
+    font-size: 14px;
+  }
+
+  /* Toast */
+  #toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--navy);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 999;
+    pointer-events: none;
+  }
+  #toast.show { opacity: 1; transform: translateY(0); }
+  #toast.success { background: var(--teal); }
+  #toast.error { background: var(--must); }
+
+  /* Config banner */
+  .config-banner {
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12.5px;
+    color: #856404;
+    margin-bottom: 1.5rem;
+  }
+  .config-banner a { color: #0a6c74; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════
+     CONFIGURATION — edit these
+══════════════════════════════ -->
+<script>
+const CONFIG = {
+  APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzO3llNt20yuNAIBSmY5aUR5-VfAvWQlGVexttF1jm_M4yaNqT_c6JFbdjugs9pVvU-HQ/exec',  // paste your deployed Apps Script URL
+  SURVEY_CODE: 'Envalior',                          // respondent access code
+  ADMIN_CODE:  'adminStitchd'                          // admin access code
+};
+</script>
+
+<!-- TOP BAR -->
+<nav class="topbar" id="topbar" style="display:none;">
+  <span class="topbar-brand">CDP Workshop <span>Survey</span></span>
+  <div class="topbar-right">
+    <span id="user-label" style="font-size:12px;color:rgba(255,255,255,0.55);"></span>
+    <button class="topbar-mode" onclick="logout()">Log out</button>
+  </div>
+</nav>
+
+<div id="toast"></div>
+
+<!-- ══ SCREEN: LOGIN ══ -->
+<div id="screen-login" class="screen active">
+  <div class="login-card">
+    <p class="login-eyebrow">CDP Workshop 2025</p>
+    <h1 class="login-title">Welcome</h1>
+    <p class="login-sub">Enter your access code to continue.</p>
+    <label class="login-label" for="code-input">Access Code</label>
+    <input class="login-input" type="password" id="code-input" placeholder="••••••••" autocomplete="off"/>
+    <div class="login-error" id="code-error">Incorrect access code. Please try again.</div>
+    <button class="btn-primary" onclick="handleLogin()">Continue →</button>
+  </div>
+</div>
+
+<!-- ══ SCREEN: SURVEY ══ -->
+<div id="screen-survey" class="screen">
+  <div class="survey-wrap">
+
+    <!-- Header -->
+    <div class="survey-header">
+      <p class="survey-eyebrow">Pre-Workshop Survey · Confidential</p>
+      <h1 class="survey-title">CDP Functional Requirements</h1>
+      <p class="survey-desc">Help us prioritise the capabilities that matter most to you. This survey takes approximately 10–15 minutes.</p>
+    </div>
+
+    <!-- Config warning (shown if URL not set) -->
+    <div class="config-banner" id="config-warning" style="display:none;">
+      ⚠ <strong>Setup required:</strong> Replace <code>YOUR_APPS_SCRIPT_URL_HERE</code> in the CONFIG block with your Google Apps Script deployment URL before sharing this survey. <a href="#" onclick="alert('See the setup guide in the companion document.')">Setup guide →</a>
+    </div>
+
+    <!-- Progress -->
+    <div class="progress-label" id="progress-label">0 of 22 requirements rated</div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
+
+    <!-- Respondent info -->
+    <div class="respondent-row">
+      <div class="field-wrap">
+        <label for="r-name">Full Name *</label>
+        <input type="text" id="r-name" placeholder="e.g. Sophie Janssen"/>
+      </div>
+      <div class="field-wrap">
+        <label for="r-role">Role / Title *</label>
+        <input type="text" id="r-role" placeholder="e.g. Digital Marketing Manager"/>
+      </div>
+    </div>
+
+    <!-- Instructions -->
+    <div class="instructions">
+      <div class="inst-block importance">
+        <h4>Importance to your role</h4>
+        <div class="inst-scale">
+          <div class="inst-item"><span class="inst-dot" style="background:var(--must)"></span> <strong>Must Have</strong> — I can't do my job without this</div>
+          <div class="inst-item"><span class="inst-dot" style="background:var(--should)"></span> <strong>Should Have</strong> — Important, but I can work around it</div>
+          <div class="inst-item"><span class="inst-dot" style="background:var(--nice)"></span> <strong>Nice to Have</strong> — Helpful, not essential</div>
+          <div class="inst-item"><span class="inst-dot" style="background:var(--not)"></span> <strong>Not Needed</strong> — No value for my role</div>
+        </div>
+      </div>
+      <div class="inst-block complexity">
+        <h4>Perceived Complexity</h4>
+        <div class="inst-scale">
+          <div class="inst-item"><span class="inst-dot" style="background:#27ae60"></span> <strong>Low</strong> — Straightforward to implement</div>
+          <div class="inst-item"><span class="inst-dot" style="background:#f39c12"></span> <strong>Medium</strong> — Moderate effort required</div>
+          <div class="inst-item"><span class="inst-dot" style="background:#c0392b"></span> <strong>High</strong> — Significant effort / dependencies</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Requirements will be injected here -->
+    <div id="requirements-container"></div>
+
+    <!-- Open questions -->
+    <div class="open-section">
+      <h3>Open Questions</h3>
+      <div class="open-q">
+        <label>1. Which requirement would make the biggest difference to your work today — and why?</label>
+        <textarea id="oq1" placeholder="Your answer…"></textarea>
+      </div>
+      <div class="open-q">
+        <label>2. Are there any missing capabilities that are important for your role?</label>
+        <textarea id="oq2" placeholder="Your answer…"></textarea>
+      </div>
+      <div class="open-q">
+        <label>3. What is the single most important outcome you hope the CDP will enable within 12 months?</label>
+        <textarea id="oq3" placeholder="Your answer…"></textarea>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <div class="submit-row">
+      <span class="submit-note" id="submit-note"></span>
+      <button class="btn-submit" id="submit-btn" onclick="submitSurvey()">Submit Survey →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCREEN: THANK YOU ══ -->
+<div id="screen-thanks" class="screen">
+  <div class="thanks-card">
+    <div class="thanks-icon">✓</div>
+    <h2 class="thanks-title">Thank you!</h2>
+    <p class="thanks-sub">Your responses have been recorded. We'll use your input to shape the CDP prioritisation and personalisation roadmap for the workshop.</p>
+  </div>
+</div>
+
+<!-- ══ SCREEN: ADMIN DASHBOARD ══ -->
+<div id="screen-admin" class="screen">
+  <div class="admin-wrap">
+    <div class="admin-header">
+      <div>
+        <h1>Results Dashboard</h1>
+        <p>CDP Workshop Survey · Live Results</p>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn-secondary" onclick="loadAdminData()">↻ Refresh</button>
+        <button class="btn-secondary" onclick="exportCSV()">Export CSV</button>
+      </div>
+    </div>
+
+    <div id="admin-content">
+      <div class="loading-dash">
+        <div class="spinner"></div>
+        <span>Loading results…</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+
+<script>
+// ════════════════════════════════════════
+// REQUIREMENTS DATA
+// ════════════════════════════════════════
+const THEMES = [
+  {
+    id: 'T1', theme: 'Theme 1', title: 'Visitor Profiling & Identification',
+    reqs: [
+      { id: '1.1', title: 'Profile Enrichment via Click Behavior', desc: 'Visitor interactions are captured as they browse, building a richer profile over time — tagging interests, product affinities, and intent signals for more relevant follow-up.' },
+      { id: '1.2', title: 'Profile Enrichment via External Databases', desc: 'Contact profiles are matched against external B2B databases to append firmographic data (industry, company size, role) — improving segmentation without additional form fills.' },
+      { id: '1.3', title: 'Progressive Profiling via Gated Content', desc: 'A small number of new questions are asked each time a visitor accesses a form — gradually building a complete, consent-based profile over multiple interactions.' },
+      { id: '1.4', title: 'Integrating Online Behavior with CRM Data', desc: 'Web behavior (page visits, downloads, email interactions) is linked to CRM records, giving sales and marketing a complete view of how known contacts engage online.' },
+      { id: '1.5', title: 'Integrating Online Behavior with Purchase Data', desc: 'Online interactions are connected to transactional data from ERP/order systems, revealing the relationship between digital engagement and actual buying behavior.' },
+      { id: '1.6', title: 'CRM & Marketing Automation Sync', desc: 'Contact data and activity are continuously synchronized between CRM and marketing automation, ensuring consistent profiles and preventing duplicate or conflicting communications.' }
+    ]
+  },
+  {
+    id: 'T2', theme: 'Theme 2', title: 'Implicit Lead Generation & Qualification',
+    reqs: [
+      { id: '2.3', title: 'MQL & SQL Filtering', desc: 'Leads are automatically classified as Marketing Qualified (MQL) or Sales Qualified (SQL) based on engagement and profile data, then routed to the appropriate follow-up track.' },
+      { id: '2.5', title: 'Propensity-to-Buy Models', desc: 'AI-driven scores identify contacts with a high likelihood to purchase in the near term — activated in paid media or personalization to accelerate conversion at the right moment.' }
+    ]
+  },
+  {
+    id: 'T3', theme: 'Theme 3', title: 'Audience Segmentation',
+    reqs: [
+      { id: '3.1', title: 'User-Friendly Audience Builder', desc: 'Marketers can independently build and activate audience segments using a self-serve interface — without IT support or custom code — reducing time-to-campaign.' },
+      { id: '3.2', title: 'Centralized Segmentation Strategy', desc: 'Audience segments are created once and automatically synced across all marketing endpoints, ensuring consistent targeting and eliminating manual exports per channel.' },
+      { id: '3.3', title: 'Up-sell & Cross-sell Opportunities', desc: 'Customers are segmented based on purchase history and automatically enrolled in campaigns promoting complementary or follow-on products.' },
+      { id: '3.4', title: 'Reactivate Inactive Accounts', desc: 'Contacts that have not engaged or purchased within a defined period are automatically identified and entered into a reactivation campaign.' },
+      { id: '3.5', title: 'Identifying High-Value Customers', desc: 'Top customers are identified based on revenue and engagement, and receive tailored treatment — exclusive content, early access, or dedicated support.' }
+    ]
+  },
+  {
+    id: 'T4', theme: 'Theme 4', title: 'Personalization & Activation',
+    reqs: [
+      { id: '4.1', title: 'Personalized Homepage Banners & CTAs', desc: 'Homepage banners and CTAs are dynamically swapped based on a visitor\'s industry, role, or previous interactions.' },
+      { id: '4.2', title: 'Personalized Product & Content Recommendations', desc: 'Based on browsing history, the website automatically surfaces related products, application pages, or technical documents the visitor hasn\'t yet seen.' },
+      { id: '4.3', title: 'Cross-Channel Communication Alignment', desc: 'Behavior across paid and owned channels is monitored to orchestrate the right next message at the right time — ensuring touchpoints build on each other.' },
+      { id: '4.4', title: 'Real-Time & Event-Based Marketing', desc: 'Customer actions trigger immediate, contextually relevant follow-up communications — responding at the moment of highest intent rather than through batch campaigns.' },
+      { id: '4.5', title: 'Personalized Email Sections', desc: 'Dynamic content blocks within a single email template allow each recipient to see sections relevant to their profile or segment — reducing production effort at scale.' },
+      { id: '4.8', title: 'Remarketing via Paid Media', desc: 'Visitors who viewed specific product or solution pages are added to remarketing audiences in paid channels (Google, Meta) and served relevant ads to bring them back.' },
+      { id: '4.9', title: 'Lookalike Audience Expansion', desc: 'High-value customer or lead segments are used as a seed audience to build lookalike audiences in LinkedIn, Meta, or Google — extending reach to similar prospects.' },
+      { id: '4.10', title: 'Unified Marketing Interface', desc: 'Audience building, email management, and website personalization are performed within a single platform — reducing complexity and ensuring consistency across activities.' }
+    ]
+  },
+  {
+    id: 'T5', theme: 'Theme 5', title: 'Data Quality, Governance & Consent',
+    reqs: [
+      { id: '5.1', title: 'Consent Management', desc: 'Privacy preferences are captured and automatically enforced across all platforms and channels, ensuring communications only reach appropriately consented contacts.' },
+      { id: '5.2', title: 'Data Quality Monitoring', desc: 'Data is continuously monitored for duplicates, invalid contacts, or incomplete records — problems flagged before they impact campaign performance or audience accuracy.' }
+    ]
+  }
+];
+
+const ALL_REQS = THEMES.flatMap(t => t.reqs.map(r => ({ ...r, theme: t.theme, themeTitle: t.title })));
+const IMPORTANCE_VALUES = { 'Must Have': 3, 'Should Have': 2, 'Nice to Have': 1, 'Not Needed': 0 };
+let answers = {};
+let rawData = [];
+let adminChart = null;
+let complexityChart = null;
+
+// ════════════════════════════════════════
+// RENDER SURVEY
+// ════════════════════════════════════════
+function renderSurvey() {
+  const container = document.getElementById('requirements-container');
+  container.innerHTML = '';
+
+  THEMES.forEach(t => {
+    const section = document.createElement('div');
+    section.className = 'theme-section';
+    section.innerHTML = `
+      <div class="theme-label">
+        <span class="theme-pill">${t.theme}</span>
+        <span class="theme-name">${t.title}</span>
+      </div>`;
+
+    t.reqs.forEach(req => {
+      const card = document.createElement('div');
+      card.className = 'req-card';
+      card.id = `card-${req.id.replace('.', '-')}`;
+
+      const importanceBtns = ['Must Have', 'Should Have', 'Nice to Have', 'Not Needed']
+        .map(label => {
+          const cls = label.toLowerCase().replace(/ /g, '-').replace('have', 'have');
+          const key = label === 'Must Have' ? 'must' : label === 'Should Have' ? 'should' : label === 'Nice to Have' ? 'nice' : 'not';
+          return `<button class="imp-btn" data-req="${req.id}" data-val="${label}" onclick="selectImportance('${req.id}','${label}',this)">${label}</button>`;
+        }).join('');
+
+      card.innerHTML = `
+        <div class="req-header">
+          <span class="req-id">${req.id}</span>
+          <span class="req-title">${req.title}</span>
+        </div>
+        <p class="req-desc">${req.desc}</p>
+        <div class="req-controls">
+          <div class="importance-group">${importanceBtns}</div>
+          <div class="complexity-wrap">
+            <span class="complexity-label-text">Complexity:</span>
+            <select class="complexity-select" onchange="selectComplexity('${req.id}', this.value)">
+              <option value="">—</option>
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+            </select>
+          </div>
+        </div>`;
+      section.appendChild(card);
+    });
+
+    container.appendChild(section);
+  });
+
+  if (CONFIG.APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+    document.getElementById('config-warning').style.display = 'block';
+  }
+}
+
+function selectImportance(reqId, value, btn) {
+  if (!answers[reqId]) answers[reqId] = {};
+  answers[reqId].importance = value;
+  const card = document.getElementById(`card-${reqId.replace('.', '-')}`);
+  card.querySelectorAll('.imp-btn').forEach(b => {
+    b.className = 'imp-btn';
+  });
+  const key = value === 'Must Have' ? 'must' : value === 'Should Have' ? 'should' : value === 'Nice to Have' ? 'nice' : 'not';
+  btn.classList.add(`active-${key}`);
+  updateCard(reqId);
+  updateProgress();
+}
+
+function selectComplexity(reqId, value) {
+  if (!answers[reqId]) answers[reqId] = {};
+  answers[reqId].complexity = value;
+  updateCard(reqId);
+  updateProgress();
+}
+
+function updateCard(reqId) {
+  const card = document.getElementById(`card-${reqId.replace('.', '-')}`);
+  const a = answers[reqId] || {};
+  const done = a.importance && a.complexity;
+  card.classList.toggle('answered', !!done);
+}
+
+function updateProgress() {
+  const total = ALL_REQS.length;
+  const done = ALL_REQS.filter(r => answers[r.id] && answers[r.id].importance && answers[r.id].complexity).length;
+  document.getElementById('progress-label').textContent = `${done} of ${total} requirements rated`;
+  document.getElementById('progress-fill').style.width = `${Math.round((done / total) * 100)}%`;
+}
+
+// ════════════════════════════════════════
+// SUBMIT
+// ════════════════════════════════════════
+async function submitSurvey() {
+  const name = document.getElementById('r-name').value.trim();
+  const role = document.getElementById('r-role').value.trim();
+  if (!name || !role) { showToast('Please enter your name and role.', 'error'); return; }
+
+  const missing = ALL_REQS.filter(r => !answers[r.id] || !answers[r.id].importance);
+  if (missing.length > 0) {
+    document.getElementById('submit-note').textContent = `${missing.length} requirement(s) still need an importance rating.`;
+    showToast(`Please rate the importance of all ${missing.length} remaining requirements.`, 'error');
+    const firstMissing = document.getElementById(`card-${missing[0].id.replace('.', '-')}`);
+    if (firstMissing) firstMissing.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
+
+  const rows = ALL_REQS.map(r => ({
+    respondent: name,
+    role,
+    req_id: r.id,
+    req_title: r.title,
+    theme: r.theme,
+    importance: answers[r.id]?.importance || '',
+    complexity: answers[r.id]?.complexity || '',
+    timestamp: new Date().toISOString()
+  }));
+
+  const payload = {
+    respondent: name,
+    role,
+    timestamp: new Date().toISOString(),
+    responses: rows,
+    open_q1: document.getElementById('oq1').value,
+    open_q2: document.getElementById('oq2').value,
+    open_q3: document.getElementById('oq3').value
+  };
+
+  if (CONFIG.APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+    console.log('DEMO MODE — would send:', payload);
+    showToast('Demo mode: response logged to console.', 'success');
+    showScreen('thanks');
+    return;
+  }
+
+  try {
+    await fetch(CONFIG.APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    showScreen('thanks');
+  } catch (e) {
+    showToast('Submission failed. Please try again or contact the organiser.', 'error');
+    btn.disabled = false;
+    btn.textContent = 'Submit Survey →';
+  }
+}
+
+// ════════════════════════════════════════
+// ADMIN DASHBOARD
+// ════════════════════════════════════════
+async function loadAdminData() {
+  document.getElementById('admin-content').innerHTML = `
+    <div class="loading-dash"><div class="spinner"></div><span>Loading results…</span></div>`;
+
+  if (CONFIG.APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+    rawData = generateDemoData();
+    renderDashboard(rawData);
+    return;
+  }
+
+  try {
+    const resp = await fetch(CONFIG.APPS_SCRIPT_URL + '?action=get');
+    const data = await resp.json();
+    rawData = data.rows || [];
+    renderDashboard(rawData);
+  } catch (e) {
+    document.getElementById('admin-content').innerHTML =
+      `<div class="no-data">Could not load data. Check your Apps Script URL and CORS settings.</div>`;
+  }
+}
+
+function renderDashboard(rows) {
+  if (!rows || rows.length === 0) {
+    document.getElementById('admin-content').innerHTML = `<div class="no-data">No responses yet. Share the survey link with your workshop participants.</div>`;
+    return;
+  }
+
+  // Aggregate
+  const respondents = [...new Set(rows.map(r => r.respondent))];
+  const scores = {};
+  const complexityMap = {};
+
+  ALL_REQS.forEach(req => {
+    scores[req.id] = { must: 0, should: 0, nice: 0, not: 0, total: 0, score: 0 };
+    complexityMap[req.id] = { Low: 0, Medium: 0, High: 0 };
+  });
+
+  rows.forEach(row => {
+    const id = row.req_id;
+    if (!scores[id]) return;
+    scores[id].total++;
+    const imp = row.importance;
+    if (imp === 'Must Have') scores[id].must++;
+    else if (imp === 'Should Have') scores[id].should++;
+    else if (imp === 'Nice to Have') scores[id].nice++;
+    else if (imp === 'Not Needed') scores[id].not++;
+
+    const val = IMPORTANCE_VALUES[imp] || 0;
+    scores[id].score += val;
+
+    const cx = row.complexity;
+    if (cx && complexityMap[id][cx] !== undefined) complexityMap[id][cx]++;
+  });
+
+  // Compute max score and sort
+  const maxScore = respondents.length * 3;
+  const ranked = ALL_REQS.map(req => {
+    const s = scores[req.id];
+    const pct = maxScore > 0 ? Math.round((s.score / maxScore) * 100) : 0;
+    const cx = complexityMap[req.id];
+    const topCx = Object.entries(cx).sort((a, b) => b[1] - a[1])[0];
+    return { ...req, ...s, pct, topCx: topCx && topCx[1] > 0 ? topCx[0] : '—', cx };
+  }).sort((a, b) => b.score - a.score || b.must - a.must);
+
+  // Must-have counts per theme
+  const themeScores = {};
+  THEMES.forEach(t => { themeScores[t.theme] = { must: 0, total: 0 }; });
+  rows.forEach(row => {
+    if (!themeScores[row.theme]) return;
+    themeScores[row.theme].total++;
+    if (row.importance === 'Must Have') themeScores[row.theme].must++;
+  });
+
+  const mustPct = (t) => themeScores[t] && themeScores[t].total > 0
+    ? Math.round((themeScores[t].must / themeScores[t].total) * 100) : 0;
+
+  // Build HTML
+  const topReq = ranked[0];
+  const mustHaveCount = rows.filter(r => r.importance === 'Must Have').length;
+  const mustPctOverall = rows.length > 0 ? Math.round((mustHaveCount / rows.length) * 100) : 0;
+
+  document.getElementById('admin-content').innerHTML = `
+    <div class="metrics-row">
+      <div class="metric-card">
+        <div class="metric-label">Responses</div>
+        <div class="metric-value">${respondents.length}</div>
+        <div class="metric-sub">respondents</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Must Haves</div>
+        <div class="metric-value">${mustPctOverall}%</div>
+        <div class="metric-sub">of all ratings</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Top Requirement</div>
+        <div class="metric-value" style="font-size:1.1rem;font-weight:500;">${topReq?.id || '—'}</div>
+        <div class="metric-sub" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${topReq?.title?.substring(0, 28) || ''}…</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Requirements Rated</div>
+        <div class="metric-value">${ALL_REQS.length}</div>
+        <div class="metric-sub">across 5 themes</div>
+      </div>
+    </div>
+
+    <div class="dash-grid">
+      <div class="dash-card">
+        <h3>Priority Ranking</h3>
+        <table class="priority-table">
+          <thead>
+            <tr>
+              <th style="width:30px">#</th>
+              <th>Requirement</th>
+              <th>Score</th>
+              <th>Complexity</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${ranked.slice(0, 15).map((r, i) => `
+              <tr>
+                <td><span class="rank-badge" style="${i < 3 ? 'background:var(--accent)' : ''}">${i + 1}</span></td>
+                <td>
+                  <div style="font-weight:500;font-size:12.5px;color:var(--navy);">${r.title}</div>
+                  <div style="font-size:11px;color:var(--text-light);">${r.theme} · ${r.id}</div>
+                </td>
+                <td>
+                  <div class="score-bar-wrap">
+                    <div class="score-bar" style="width:${Math.max(4, r.pct)}px;max-width:80px;"></div>
+                    <span class="score-val">${r.pct}%</span>
+                  </div>
+                  <div style="font-size:10px;color:var(--text-light);margin-top:2px;">${r.must}M · ${r.should}S · ${r.nice}N</div>
+                </td>
+                <td><span class="complexity-badge cx-${(r.topCx || '').toLowerCase()}">${r.topCx}</span></td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+      <div class="dash-card" style="display:flex;flex-direction:column;gap:1.5rem;">
+        <div>
+          <h3>Importance Distribution</h3>
+          <div style="position:relative;height:220px;">
+            <canvas id="importanceChart"></canvas>
+          </div>
+        </div>
+        <div>
+          <h3>Must-Have % by Theme</h3>
+          <div style="position:relative;height:180px;">
+            <canvas id="themeChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dash-card" style="margin-bottom:1.5rem;">
+      <h3>Full Requirement Scores — Importance vs Complexity</h3>
+      <div style="position:relative;height:${Math.max(300, ALL_REQS.length * 30 + 60)}px;">
+        <canvas id="bubbleChart"></canvas>
+      </div>
+    </div>
+  `;
+
+  // Importance donut
+  const impTotals = rows.reduce((acc, r) => {
+    acc[r.importance] = (acc[r.importance] || 0) + 1;
+    return acc;
+  }, {});
+  new Chart(document.getElementById('importanceChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Must Have', 'Should Have', 'Nice to Have', 'Not Needed'],
+      datasets: [{
+        data: [
+          impTotals['Must Have'] || 0,
+          impTotals['Should Have'] || 0,
+          impTotals['Nice to Have'] || 0,
+          impTotals['Not Needed'] || 0
+        ],
+        backgroundColor: ['#c0392b', '#2980b9', '#27ae60', '#bdc3c7'],
+        borderWidth: 0,
+        hoverOffset: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '62%',
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed} (${Math.round(ctx.parsed / rows.length * 100)}%)` } }
+      }
+    }
+  });
+
+  // Theme bar
+  new Chart(document.getElementById('themeChart'), {
+    type: 'bar',
+    data: {
+      labels: THEMES.map(t => t.theme),
+      datasets: [{
+        label: 'Must Have %',
+        data: THEMES.map(t => mustPct(t.theme)),
+        backgroundColor: '#0f2340',
+        borderRadius: 4,
+        barThickness: 18
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      indexAxis: 'y',
+      scales: {
+        x: { max: 100, ticks: { callback: v => v + '%', font: { size: 11 } }, grid: { color: '#eee' } },
+        y: { ticks: { font: { size: 11 } }, grid: { display: false } }
+      },
+      plugins: { legend: { display: false } }
+    }
+  });
+
+  // Bubble: importance score (x) vs avg complexity (y)
+  const CX_VAL = { Low: 1, Medium: 2, High: 3 };
+  const bubbleData = ranked.map(r => {
+    const cxVals = Object.entries(r.cx).flatMap(([k, v]) => Array(v).fill(CX_VAL[k] || 0));
+    const avgCx = cxVals.length > 0 ? cxVals.reduce((a, b) => a + b, 0) / cxVals.length : 0;
+    return { label: r.id, x: r.pct, y: +avgCx.toFixed(2), r: 6 + Math.round(r.must * 2), title: r.title };
+  });
+
+  new Chart(document.getElementById('bubbleChart'), {
+    type: 'bubble',
+    data: {
+      datasets: [{
+        label: 'Requirements',
+        data: bubbleData,
+        backgroundColor: bubbleData.map(d =>
+          d.x > 60 && d.y < 2 ? 'rgba(42, 157, 143, 0.7)' :
+          d.x > 60 && d.y >= 2 ? 'rgba(192, 57, 43, 0.6)' :
+          d.x < 30 ? 'rgba(189, 195, 199, 0.6)' : 'rgba(15, 35, 64, 0.5)'
+        ),
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: { padding: 20 },
+      scales: {
+        x: {
+          title: { display: true, text: 'Priority Score (% of max)', font: { size: 11 } },
+          min: -5, max: 105,
+          ticks: { callback: v => v + '%', font: { size: 11 } },
+          grid: { color: '#f0ece3' }
+        },
+        y: {
+          title: { display: true, text: 'Avg Complexity (1=Low, 3=High)', font: { size: 11 } },
+          min: 0.5, max: 3.5,
+          ticks: { callback: v => ['', 'Low', 'Medium', 'High'][Math.round(v)] || '', stepSize: 1, font: { size: 11 } },
+          grid: { color: '#f0ece3' }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const d = ctx.raw;
+              return [` ${d.label}: ${d.title}`, ` Priority: ${d.x}% · Complexity: ${{ 1: 'Low', 2: 'Medium', 3: 'High' }[Math.round(d.y)] || d.y}`];
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+// ════════════════════════════════════════
+// DEMO DATA
+// ════════════════════════════════════════
+function generateDemoData() {
+  const respondents = ['Lena Müller', 'Tom Bakker', 'Sophie Janssen', 'Marc Dubois'];
+  const rows = [];
+  const importancePool = ['Must Have', 'Must Have', 'Should Have', 'Should Have', 'Nice to Have', 'Not Needed'];
+  const complexityPool = ['Low', 'Medium', 'Medium', 'High'];
+  respondents.forEach(name => {
+    ALL_REQS.forEach(req => {
+      rows.push({
+        respondent: name,
+        role: 'Marketing Manager',
+        req_id: req.id,
+        req_title: req.title,
+        theme: req.theme,
+        importance: importancePool[Math.floor(Math.random() * importancePool.length)],
+        complexity: complexityPool[Math.floor(Math.random() * complexityPool.length)]
+      });
+    });
+  });
+  return rows;
+}
+
+// ════════════════════════════════════════
+// EXPORT CSV
+// ════════════════════════════════════════
+function exportCSV() {
+  if (!rawData || rawData.length === 0) { showToast('No data to export.', 'error'); return; }
+  const headers = ['Respondent', 'Role', 'Req ID', 'Requirement', 'Theme', 'Importance', 'Complexity', 'Timestamp'];
+  const rows = rawData.map(r => [
+    `"${r.respondent || ''}"`, `"${r.role || ''}"`, r.req_id, `"${r.req_title || ''}"`,
+    r.theme, r.importance, r.complexity, r.timestamp || ''
+  ]);
+  const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'cdp_survey_results.csv'; a.click();
+  URL.revokeObjectURL(url);
+  showToast('CSV exported.', 'success');
+}
+
+// ════════════════════════════════════════
+// AUTH + NAVIGATION
+// ════════════════════════════════════════
+let currentMode = null;
+
+function handleLogin() {
+  const code = document.getElementById('code-input').value.trim();
+  const input = document.getElementById('code-input');
+  const err = document.getElementById('code-error');
+
+  if (code === CONFIG.ADMIN_CODE) {
+    currentMode = 'admin';
+    document.getElementById('user-label').textContent = 'Admin view';
+    showScreen('admin');
+    document.getElementById('topbar').style.display = 'flex';
+    loadAdminData();
+  } else if (code === CONFIG.SURVEY_CODE) {
+    currentMode = 'survey';
+    document.getElementById('user-label').textContent = 'Respondent';
+    showScreen('survey');
+    document.getElementById('topbar').style.display = 'flex';
+  } else {
+    input.classList.add('error');
+    err.style.display = 'block';
+    setTimeout(() => { input.classList.remove('error'); err.style.display = 'none'; }, 3000);
+  }
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('screen-login').classList.contains('active')) handleLogin();
+});
+
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(`screen-${name}`).classList.add('active');
+}
+
+function logout() {
+  document.getElementById('topbar').style.display = 'none';
+  document.getElementById('code-input').value = '';
+  currentMode = null;
+  showScreen('login');
+}
+
+// ════════════════════════════════════════
+// TOAST
+// ════════════════════════════════════════
+function showToast(msg, type = 'info') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `show ${type}`;
+  setTimeout(() => { t.className = ''; }, 3500);
+}
+
+// ════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════
+renderSurvey();
+</script>
+</body>
+</html>
